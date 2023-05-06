@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>test</title>
+    <style>
+      html {
+        height: 300vh;
+      }
+      .parent {
+        width: 300px;
+        height: 300px;
+        border: 1px solid red;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .child {
+        width: 200px;
+        height: 200px;
+        border: 1px solid green;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      const urls = ["https://www.youtube.com/", "https://www.google.com/"];
+
+      // 添加一个页面开始加载时的标记
+      performance.mark("start");
+
+      Promise.all(urls.map((url) => fetch(url, { method: "HEAD" })))
+        .then((responses) => {
+          responses.forEach((response, index) => {
+            const domain = urls[index];
+            const measureName = `${domain} load`;
+
+            // 添加一个标记，并计算加载时间
+            performance.mark(measureName);
+            performance.measure(measureName, "start", measureName);
+
+            // 获取该域名的加载时间，并打印出来
+            const timing = performance.getEntriesByName(measureName)[0];
+            console.log(`${domain} 加载时间：${timing.duration}ms`);
+          });
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    </script>
+  </body>
+</html>
